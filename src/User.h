@@ -4,6 +4,9 @@
 #include "Base.h"
 #include "Connector.h"
 #include "Command.h"
+#include "And.h"
+#include "Or.h"
+#include "Semicolon.h"
 #include <vector>
 #include <string>
 #include <bits/stdc++.h>
@@ -18,6 +21,18 @@ class User {
   
   private:
   bool isConnector(string c) { return (c == ";" || c == "&&" || c == "||");}
+  Connector * makeConnector(string str) {
+    if (str == "&&") {
+	return new And();
+    }
+    if (str == "||") {
+        return new Or();
+    }
+    if (str == ";") {
+        return new Semicolon();
+    }
+    return 0;
+  }
 
   public:
   User() {}
@@ -33,7 +48,7 @@ class User {
 
     while (!ss.eof() && ss >> str && !isConnector(str))
 	l += str;
-    t = new Connector(str);
+    t = makeConnector(str);
     while (!ss.eof() && ss >> str && !isConnector(str))
 	r += str;
     
@@ -44,7 +59,7 @@ class User {
 	r.clear();
 	if (ss.eof()) break;
 	if (isConnector(str)) {
-	  t = new Connector(str);
+	  t = makeConnector(str);
 	  while (!ss.eof() && ss >> str && !isConnector(str)) {
 	    r += str;
 	  }
@@ -57,14 +72,6 @@ class User {
    cout << inputs.size(); 
    //for (int j = 0; j < inputs.size(); j++)
 	inputs.at(inputs.size()-1)->execute();
-  }
-
-  char * getInput() {
-      string line;
-      getline(cin, line);
-      char *cmds = new char[line.size()-1];
-      strcpy(cmds, line.c_str());
-      return cmds;
   }
 };
 #endif
