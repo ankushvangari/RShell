@@ -9,22 +9,28 @@ class Command : public Base {
   bool execute() {
     vector<char*> commands;
     stringstream ss(cmd);
-    string str, s;
+    string str;
     char *ca;
     
-    while (ss >> str) {
-	ca = new char[str.size()];
-	strcpy(ca, str.c_str());
-	commands.push_back(ca);
+    str = cmd.substr(0, cmd.find(' '));
+    ca = new char[str.size()];
+    strcpy(ca, str.c_str());
+    commands.push_back(ca);
+    
+    if (cmd.find(' ') != string::npos) {
+      str = cmd.substr(cmd.find(' ') + 1);
+      ca = new char[str.size()];
+      strcpy(ca, str.c_str());
+      commands.push_back(ca);
     }
     commands.push_back(NULL);
     
     char **cmds	= &commands[0];
- 
     pid_t pid = fork();
     if (pid == 0) {
 	if (execvp(cmds[0], cmds) == -1) {
 	  perror("Exec Fail");
+	  exit(1);
 	  return false;
 	}
     }    
