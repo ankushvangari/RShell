@@ -14,6 +14,7 @@ class Command : public Base {
     string str;
     char *ca;
     
+    //Break up command
     str = cmd.substr(0, cmd.find(' '));
     ca = new char[str.size()];
     strcpy(ca, str.c_str());
@@ -21,6 +22,7 @@ class Command : public Base {
     if (str == "exit")
 	exit(0);
 
+    //Break up command with arguments
     if (cmd.find(' ') != string::npos) {
       str = cmd.substr(cmd.find(' ') + 1);
       ca = new char[str.size()];
@@ -29,6 +31,7 @@ class Command : public Base {
     }
     commands.push_back(NULL);
     
+    //Execute commands
     char **cmds	= &commands[0];
     pid_t pid = fork();
     if (pid == 0) {

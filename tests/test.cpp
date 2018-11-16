@@ -58,7 +58,6 @@ TEST(RShellTest, MultipleCommandTests) {
   User* user = new User();
 
   EXPECT_EQ(true, user->run("ls && pwd || echo hello ; dir"));
-  EXPECT_EQ(true, user->run("ls && pwd && #echo hello ; dir"));
 
 }
 

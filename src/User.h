@@ -68,10 +68,6 @@ class User {
       l.erase(l.size() - 1);
 
     if (!isConnector(str) || !(ss >> r) || r.at(0) == '#') {
-      Command *c = new Command(l);
-      bool b  = c->execute();
-   cout << b << endl; 
-return b;
       return (new Command(l))->execute();
     }
 
@@ -133,6 +129,7 @@ return b;
   return inputs.at(inputs.size() - 1)->execute();
   }
  
+  //Keeps getting input and calls other run function with line of commands
   void run() {
     char hostname[HOST_NAME_MAX];
     char username[LOGIN_NAME_MAX];
