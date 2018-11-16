@@ -49,13 +49,13 @@ class User {
     inputs.clear();
 
     //Get first command
-    while (!ss.eof() && ss >> str && !str.empty() && str.at(0) != '#' 
+    while (ss >> str && !str.empty() && str.at(0) != '#' 
 	    && str.at(str.size() - 1) != ';' && !isConnector(str))
       l += str + ' ';
     
     //Return if comment found
     if (str.empty() || str.at(0) == '#')
-	return true;
+	return false;
 
     //Semicolon edge case (With/without space)
     if (!str.empty() && str.size() > 1 && str.at(str.size() - 1) == ';') {
@@ -67,18 +67,19 @@ class User {
     if (!l.empty())
       l.erase(l.size() - 1);
 
-    if (!isConnector(str)) {
+    if (!isConnector(str) || !(ss >> r) || r.at(0) == '#') {
       Command *c = new Command(l);
       bool b  = c->execute();
-cout << b;      
+   cout << b << endl; 
 return b;
       return (new Command(l))->execute();
     }
 
+    r += ' ';
     t = makeConnector(str);
-    
+    str = r; 
     //Get first command to the right of first connector
-    while (!ss.eof() && ss >> str && str.at(0) != '#' &&str.at(str.size() - 1) != ';' && !isConnector(str))
+    while (ss >> str && str.at(0) != '#' &&str.at(str.size() - 1) != ';' && !isConnector(str))
         r += str + ' ';
 
     //Stop and run command up to comment if found

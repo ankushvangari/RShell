@@ -30,26 +30,29 @@ class Command : public Base {
     commands.push_back(NULL);
     
     char **cmds	= &commands[0];
-    pid_t pid = fork(), w;
+    pid_t pid = fork();
     if (pid == 0) {
 	if (execvp(cmds[0], cmds) == -1) {
 	 perror("Exec Fail");
-	//  exit(1);
+	  exit(1);
 	  return false;
 	}
     }    
     else if (pid > 0) {
+      do { waitpid(pid, &status, 0); }
+      while (WIFEXITED(status) == -1);
+/*
       if (waitpid(pid, 0, 0) == -1) {
 	perror("Child Wait Fail");
 	return false;
-      }
+      }*/
     }
     else {
 	perror("Fork Failed");
 	return false;
     }
 
-    return true;
+    return !WEXITSTATUS(status);
   }
 
 };
