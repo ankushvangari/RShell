@@ -23,6 +23,7 @@ class User {
   
   private:
   bool isConnector(string c) { return (c == ";" || c == "&&" || c == "||");}
+
   Connector * makeConnector(string str) {
     if (str == "&&") {
 	return new And();
@@ -39,71 +40,115 @@ class User {
   public:
   User() {}
   User(string uN) : userName(uN) {}
-  
+ 
+  bool run(string line) {    
+    string l, r, str;
+    Base *t, *left;
+
+    stringstream ss(line);
+    inputs.clear();
+
+    //Get first command
+    while (!ss.eof() && ss >> str && !str.empty() && str.at(0) != '#' 
+	    && str.at(str.size() - 1) != ';' && !isConnector(str))
+      l += str + ' ';
+    
+    //Return if comment found
+    if (str.empty() || str.at(0) == '#')
+	return true;
+
+    //Semicolon edge case (With/without space)
+    if (!str.empty() && str.size() > 1 && str.at(str.size() - 1) == ';') {
+        str.erase(str.size() - 1);
+        l += str + ' ';
+        str = ";";
+    }
+
+    if (!l.empty())
+      l.erase(l.size() - 1);
+
+    if (!isConnector(str)) {
+      Command *c = new Command(l);
+      bool b  = c->execute();
+cout << b;      
+return b;
+      return (new Command(l))->execute();
+    }
+
+    t = makeConnector(str);
+    
+    //Get first command to the right of first connector
+    while (!ss.eof() && ss >> str && str.at(0) != '#' &&str.at(str.size() - 1) != ';' && !isConnector(str))
+        r += str + ' ';
+
+    //Stop and run command up to comment if found
+    if (!str.empty() && str.at(0) == '#') {
+	return (new Command(r))->execute();
+    }
+
+    //Semicolon edge case
+    if (!str.empty() && str.size() > 1 && str.at(str.size() - 1) == ';') {
+        str.erase(str.size() - 1);
+        r += str + ' ';
+        str = ";";
+    }
+
+    if (!r.empty())
+      r.erase(r.size()-1);
+
+    //Create command with appropriate left/right and add to vector (Creating tree)
+    t->left = new Command(l);
+    t->right = new Command(r);
+    inputs.push_back(t);
+
+    //Continue process till end of input
+     while (!ss.eof() && isConnector(str)) {
+        r.clear();
+          t = makeConnector(str);
+          while (!ss.eof() && ss >> str && str.at(0) != '#' && str.at(str.size() - 1) != ';' && !isConnector(str)) {
+            r += str + ' ';
+          }
+	  if (!str.empty() && str.at(0) == '#') {
+	    if (!r.empty())
+	      r.erase(r.size() - 1);
+	    t->left = inputs.at(inputs.size() - 1);
+	    t->right = new Command(r);
+	    inputs.push_back(t);
+	    break;
+	  }
+
+          if (!str.empty() && str.size() > 1 && str.at(str.size()-1) == ';') {
+            str.erase(str.size() - 1);
+            r += str + ' ';
+            str = ";";
+          }
+          if (!r.empty())
+            r.erase(r.size()-1);
+          t->left = inputs.at(inputs.size()-1);
+          t->right = new Command(r);
+          inputs.push_back(t);
+    }
+   
+  return inputs.at(inputs.size() - 1)->execute();
+  }
+ 
   void run() {
     char hostname[HOST_NAME_MAX];
     char username[LOGIN_NAME_MAX];
     gethostname(hostname, HOST_NAME_MAX);
     getlogin_r(username, LOGIN_NAME_MAX);
-    
+
     cout << username << "@" << hostname << "$ " ;
-    string line, l, r, str;
-    Base *t, *left;
-    getline(cin, line);
-    stringstream ss(line);
-
-    while (!ss.eof() && ss >> str && str.at(str.size() - 1) != ';' && !isConnector(str))
-	l += str + ' ';
-    if (!str.empty() && str.size() > 1 && str.at(str.size() - 1) == ';') {
-	str.erase(str.size() - 1);
-	l += str + ' ';
-	str = ";";
-    }
+    string line;
     
-    if (!l.empty())
-      l.erase(l.size() - 1);
-    if (!isConnector(str)) {
-      (new Command(l))->execute();
-      return ;
-    }
-    t = makeConnector(str);
+    while(getline(cin, line)) {
+      if (!line.empty() && line.at(0) == '#') 
+	return;
 
-    while (!ss.eof() && ss >> str && str.at(str.size() - 1) != ';' && !isConnector(str))
-	r += str + ' ';
-    if (!str.empty() && str.size() > 1 && str.at(str.size() - 1) == ';') {
-	str.erase(str.size() - 1);
-	r += str + ' ';
-	str = ";";
+      if (!line.empty())
+	run(line); 
+      cout << username << "@" << hostname << "$ ";
     }
-    if (!r.empty())
-      r.erase(r.size()-1);
-    t->left = new Command(l);
-    t->right = new Command(r);
-    inputs.push_back(t);
-
-    while (true) {
-	r.clear();
-	if (ss.eof()) break;
-	if (isConnector(str)) {
-	  t = makeConnector(str);
-	  while (!ss.eof() && ss >> str && str.at(str.size() - 1) != ';' && !isConnector(str)) {
-	    r += str + ' ';
-	  }
-	  if (!str.empty() && str.size() > 1 && str.at(str.size()-1) == ';') {
-	    str.erase(str.size() - 1);
-	    r += str + ' ';
-	    str = ";";
-	  }
-          if (!r.empty())
-	    r.erase(r.size()-1);
-	  t->left = inputs.at(inputs.size()-1);
-	  t->right = new Command(r);
-	  inputs.push_back(t);
-	}
-    }
-
-   //cout << inputs.size(); 
-   inputs.at(inputs.size()-1)->execute();
   }
 };
 #endif

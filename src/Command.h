@@ -7,6 +7,8 @@ class Command : public Base {
   Command() : Base() {}
   Command(std::string cmd) : Base(cmd) {}
   bool execute() {
+    int status;
+
     vector<char*> commands;
     stringstream ss(cmd);
     string str;
@@ -16,7 +18,9 @@ class Command : public Base {
     ca = new char[str.size()];
     strcpy(ca, str.c_str());
     commands.push_back(ca);
-    
+    if (str == "exit")
+	exit(0);
+
     if (cmd.find(' ') != string::npos) {
       str = cmd.substr(cmd.find(' ') + 1);
       ca = new char[str.size()];
@@ -26,11 +30,11 @@ class Command : public Base {
     commands.push_back(NULL);
     
     char **cmds	= &commands[0];
-    pid_t pid = fork();
+    pid_t pid = fork(), w;
     if (pid == 0) {
 	if (execvp(cmds[0], cmds) == -1) {
-	  perror("Exec Fail");
-	  exit(1);
+	 perror("Exec Fail");
+	//  exit(1);
 	  return false;
 	}
     }    
@@ -46,26 +50,6 @@ class Command : public Base {
     }
 
     return true;
-/*
-    pid_t child = fork();
-    
-    if (child < 0) {
-	perror("Internal Error: Cannot fork.");
-	return false;
-    }
-    else if (child == 0) {
-	char *argv = new char(cmd.size()-1);
-	strcpy(argv, cmd.c_str());
-	execvp(argv[0], argv);
-	perror(cmd);
-	return false;
-    }
-    else {
-	if (waitpid(child, 0, 0) < 0) {
-	  perror("Internal error: cannot wait for child");
-	  return false;
-	}
-    }*/
   }
 
 };
