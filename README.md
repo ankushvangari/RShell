@@ -25,5 +25,8 @@ $ ls -a; echo hello; mkdir test
 
 ## Known Bugs
 Command `cd` will not work  
+Some `#` Bugs  
+`echo` will not print `#` for `echo "#"`  
+`echo hello world &&` will not ask for further input  
 Anything after a # will be a comment, so if you have a command like `echo #`, the '#' will not print  
 `echo &&` does not ask for another input  
