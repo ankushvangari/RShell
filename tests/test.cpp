@@ -1,7 +1,7 @@
 #include "../src/User.h"
 #include "gtest/gtest.h"
 #include <stdlib.h>
-   
+    
 TEST(RShellTest, OneCommands) {
   User *user = new User();
 
