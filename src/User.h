@@ -54,8 +54,12 @@ class User {
       l += str + ' ';
     
     //Return if comment found
-    if (str.empty() || str.at(0) == '#')
-	return false;
+    if (str.empty() || str.at(0) == '#') {
+	if (l.empty())
+	  return false;
+	l.erase(l.size()-1);
+	return (new Command(l))->execute();
+    }
 
     //Semicolon edge case (With/without space)
     if (!str.empty() && str.size() > 1 && str.at(str.size() - 1) == ';') {
@@ -140,8 +144,8 @@ class User {
     string line;
     
     while(getline(cin, line)) {
-      if (!line.empty() && line.at(0) == '#') 
-	return;
+      //if (!line.empty()) 
+	//return;
 
       if (!line.empty())
 	run(line); 

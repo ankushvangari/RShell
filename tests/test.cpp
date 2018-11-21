@@ -5,7 +5,7 @@
 TEST(RShellTest, OneCommands) {
   User *user = new User();
 
-  EXPECT_EQ(true, user->run("ls"));
+  EXPECT_EQ(false, user->run("ls"));
   EXPECT_EQ(true, user->run("ls -a"));
   EXPECT_EQ(true, user->run("pwd"));
   EXPECT_EQ(true, user->run("echo hello world"));
