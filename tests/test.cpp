@@ -1,11 +1,11 @@
 #include "../src/User.h"
 #include "gtest/gtest.h"
 #include <stdlib.h>
-    
+
 TEST(RShellTest, OneCommands) {
   User *user = new User();
 
-  EXPECT_EQ(false, user->run("ls"));
+  EXPECT_EQ(true, user->run("ls"));
   EXPECT_EQ(true, user->run("ls -a"));
   EXPECT_EQ(true, user->run("pwd"));
   EXPECT_EQ(true, user->run("echo hello world"));
@@ -30,41 +30,47 @@ TEST(RShellTest, OneCommands) {
 
 TEST(RShellTest, TwoCommandTests) {
   User *user = new User();
-  
+
   EXPECT_EQ(false, user->run("lsa && ls"));
-  EXPECT_EQ(true, user->run("lsa || ls"));
-  EXPECT_EQ(true, user->run("lsa ; ls"));
-  EXPECT_EQ(false, user->run("ls && lsa"));
-  EXPECT_EQ(true, user->run("ls || lsa"));
-  EXPECT_EQ(false, user->run("ls ; lsa"));
+  EXPECT_EQ(true, user->run("lsa || echo can i get 1--"));
+  EXPECT_EQ(true, user->run("lsa ; echo hi"));
+  EXPECT_EQ(false, user->run("echo no && lsa"));
+  EXPECT_EQ(true, user->run("echo i hope i get 100 || lsa"));
+  EXPECT_EQ(false, user->run("echo plz ; lsa"));
 
   EXPECT_EQ(true, user->run("ls ; pwd"));
-  EXPECT_EQ(true, user->run("ls && pwd"));
-  EXPECT_EQ(true, user->run("ls || pwd"));
+  EXPECT_EQ(true, user->run("echo this is a lot of work  && pwd"));
+  EXPECT_EQ(true, user->run("echo bye world || pwd"));
 
-  EXPECT_EQ(true, user->run("ls || pwd"));
-  EXPECT_EQ(true, user->run("ls || pwd"));
+  EXPECT_EQ(true, user->run("echo hi || pwd"));
+  EXPECT_EQ(true, user->run("echo hello world || pwd"));
   EXPECT_EQ(false, user->run("ls -z"));
-  
-  EXPECT_EQ(true, user->run("ls || #lsa"));
-  EXPECT_EQ(true, user->run("ls && #sdf"));
-  EXPECT_EQ(true, user->run("ls ; #asd"));
-  EXPECT_EQ(true, user->run("ls || # lsa"));
-  EXPECT_EQ(true, user->run("ls && # sdf"));
-  EXPECT_EQ(true, user->run("ls ; # asd"));
+
+  EXPECT_EQ(true, user->run("echo hi || #lsa"));
+  EXPECT_EQ(true, user->run("echo hello && #sdf"));
+  EXPECT_EQ(true, user->run("echo bye ; #asd"));
+  EXPECT_EQ(true, user->run("echo see ya || # lsa"));
+  EXPECT_EQ(true, user->run("echo okay && # sdf"));
+  EXPECT_EQ(true, user->run("echo wow ; # asd"));
+
+  EXPECT_EQ(false, user->run("ls-a && echo hi"));
+
+  EXPECT_EQ(true, user->run("ls && exit"));
 }
 
 TEST(RShellTest, MultipleCommandTests) {
   User* user = new User();
 
-  EXPECT_EQ(true, user->run("ls && pwd || echo hello ; dir"));
-
+  EXPECT_EQ(true, user->run("ls && echo hi || echo hello ; dir"));
+  EXPECT_EQ(false, user->run("ls&& pwd || echo hello ; dir"));
+  EXPECT_EQ(true, user->run("ls && echos hi || echo hello ; dir"));
+  EXPECT_EQ(true, user->run("ls && pwd || echo hello ; exit"));
 }
 
 using namespace std;
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
-  
+
   return RUN_ALL_TESTS();
 }
 

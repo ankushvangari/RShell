@@ -1,2 +1,8 @@
 /src/rshell
 test
+MakeFile
+/CMakeFiles
+cmake_install.cmake
+rshell
+CMakeCache.txt
+
