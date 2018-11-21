@@ -22,7 +22,7 @@ is equivalent to:
 ```bash
 $ ls -a; echo hello; mkdir test
 ```
-
+ 
 ## Known Bugs
 Command `cd` will not work  
 `echo hello world &&` will not ask for further input  
