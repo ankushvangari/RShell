@@ -9,6 +9,8 @@
 #include <bits/stdc++.h>
 #include <vector>
 #include <sstream>
+#include <sys/stat.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -19,8 +21,8 @@ class Base {
   bool isSuccessful;
   
   public:
-    Base() {}
-    Base(std::string cmd) : cmd(cmd) {} 
+    Base() : left(0), right(0) {}
+    Base(std::string cmd) : cmd(cmd), left(0), right(0) {} 
     virtual bool execute() = 0;
 };
 #endif

@@ -3,11 +3,13 @@
 
 class Semicolon :public Connector {
   public:
-    Semicolon() : Connector() {}
+    Semicolon() : Connector(";") {}
     Semicolon(string str) : Connector(str) {}
 
     bool execute() {
-	left->execute();
+	if (!right)
+          return left->execute();
+        left->execute();
 	return right->execute();
     }
 };

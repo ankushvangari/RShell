@@ -4,11 +4,11 @@
 
 class And : public Connector {
   public:
-    And() : Connector() {}
+    And() : Connector("&&") {}
     And(string str) : Connector(str) {}
 
     bool execute() {
-	return (left->execute() && right->execute());
+	return (right) ? (left->execute() && right->execute()) : (left->execute());
     }
 
 };
