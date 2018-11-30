@@ -143,7 +143,6 @@ class User {
           t->right = new Command(r);
           inpts.push_back(t);
     }
-//cout << inpts.at(inpts.size()-1)->cmd;
    return inpts;
   }
 
@@ -168,8 +167,6 @@ class User {
     int closePos, openPos = line.find('(');
     Base *t, *t2;
    
-    //for (unsigned i = 0; i < line.size(); i++) {
-      //if (line.at(i) == '(') {
     closePos = findClosingParen(line, openPos);
    
     l = makeTree(line.substr(0, openPos));
@@ -204,8 +201,8 @@ class User {
   bool run(string line) {    
     size_t lB = std::count(line.begin(), line.end(), '[');
     size_t rB = std::count(line.begin(), line.end(), ']');
-    //boost::replace_all(line, "[", "briancrites");
-    //boost::replace_all(line, " ]", "brian");
+
+    string str = "hi brian";
     
     if (lB != rB) {
       cout << "Uneven brackets" << endl;

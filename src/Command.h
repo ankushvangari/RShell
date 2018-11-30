@@ -76,11 +76,6 @@ class Command : public Base {
     //Break up command with arguments
     if (cmd.find(' ') != string::npos) {
       str2 = cmd.substr(cmd.find(' ') + 1);
-      //boost::replace_all(str2, "briancrites ", "[");
-     //if (str != "echo")
-       // boost::replace_all(str2, " ]", "");
-      //else
-       // boost::replace_all(str2, "brian", "");
 
       ca = new char[str2.size()];
       strcpy(ca, str2.c_str());
@@ -101,11 +96,6 @@ class Command : public Base {
     else if (pid > 0) {
       do { waitpid(pid, &status, 0); }
       while (WIFEXITED(status) == -1);
-/*
-      if (waitpid(pid, 0, 0) == -1) {
-	perror("Child Wait Fail");
-	return false;
-      }*/
     }
     else {
 	perror("Fork Failed");
