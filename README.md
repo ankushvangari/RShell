@@ -22,6 +22,7 @@ is equivalent to:
 ```bash
 $ ls -a; echo hello; mkdir test
 ```
+Parentheses are also functional in this program. For example: `((echo hi && ls || pwd) && (echo hello || ls)) && exit`
   
 ## Known Bugs
 Command `cd` will not work  
