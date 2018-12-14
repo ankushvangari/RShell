@@ -11,6 +11,7 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <boost/algorithm/string.hpp>
+#include <fcntl.h>
 
 using namespace std;
 

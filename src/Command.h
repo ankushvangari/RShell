@@ -52,12 +52,32 @@ class Command : public Base {
     }
   }
 
+  vector<char*> redirect(vector<char*> cmds) {
+    if (cmds[1][0] == '>') {
+    //  string s(cmds[]);
+      int fd, ret;
+
+      fd = open("hello.txt", O_RDONLY);
+      if (fd < 0) {
+        perror("Error: Cannot open file");
+        exit(1);
+      }
+      ret = dup2(fd, 0);
+      if (ret < 0) {
+        perror("Error: Dup2 error");
+        exit(1);
+      }
+      close(fd);
+      return (vector<char*>{cmds[0], NULL});
+    }
+  }
+
   bool execute() {
     if (left)
       left->execute();
 
     int status;
-
+//cmd = "cat";
     vector<char*> commands;
     stringstream ss(cmd);
     string str, str2;
@@ -82,14 +102,70 @@ class Command : public Base {
       commands.push_back(ca);
     }
     commands.push_back(NULL);
+    bool redirect = false;
 
     //Execute commands
     char **cmds	= &commands[0];
     pid_t pid = fork();
-    if (pid == 0) {
-	if (execvp(cmds[0], cmds) == -1) {
+     if (pid == 0) {
+      if (cmd.find(' ') != string::npos && cmd.substr(cmd.find(' ') + 1, 2) == ">>") {
+	int fd, ret;
+        string c = cmd.substr(cmd.find(' ') + 1);
+        c = c.substr(c.find(' ') + 1);
+        fd = open(c.c_str(), O_CREAT | O_RDWR | O_APPEND,
+        S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+        if (fd < 0) {
+          perror("Error: Cannot open file");
+          exit(1);
+        }
+        ret = dup2(fd, 1);
+        if (ret < 0) {
+          perror("Error: Dup2 error");
+          exit(1);
+        }
+        close(fd);
+        commands.erase(commands.begin()+1);
+      }
+      else if (cmd.find(' ') != string::npos && cmd.substr(cmd.find(' ') + 1, 1) == "<") {
+ 	int fd, ret;
+        string c = cmd.substr(cmd.find(' ') + 1);
+        c = c.substr(c.find(' ') + 1);
+        fd = open(c.c_str(), O_RDONLY);
+        if (fd < 0) {
+          perror("Error: Cannot open file");
+          exit(1);
+        }
+        ret = dup2(fd, 0);
+        if (ret < 0) {
+          perror("Error: Dup2 error");
+          exit(1);
+        }
+        close(fd);
+        commands.erase(commands.begin()+1);
+      }
+
+      else if (cmd.find(' ') != string::npos && cmd.substr(cmd.find(' ') + 1, 1) == ">") {        
+ 	int fd, ret;
+        string c = cmd.substr(cmd.find(' ') + 1);
+        c = c.substr(c.find(' ') + 1);
+        fd = open(c.c_str(), O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
+        if (fd < 0) {
+          perror("Error: Cannot open file");
+          exit(1);
+        }
+        ret = dup2(fd, 1);
+        if (ret < 0) {
+          perror("Error: Dup2 error");
+          exit(1);
+        }
+        close(fd);
+        commands.erase(commands.begin()+1);
+      }
+
+      if (execvp(cmds[0], cmds) == -1) {
 	 perror("Exec Fail");
-	  exit(1);
+	 exit(1);
+
 	  return false;
 	}
     }    
@@ -104,7 +180,6 @@ class Command : public Base {
     
     if (right)
       right->execute();
-
     return !WEXITSTATUS(status);
   }
 

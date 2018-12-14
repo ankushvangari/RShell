@@ -226,7 +226,8 @@ class User {
     cout << username << "@" << hostname << "$ " ;
     string line;
     
-    while(getline(cin, line)) {
+    while(true) {
+      getline(cin, line);
       //if (!line.empty()) 
 	//return;
 
