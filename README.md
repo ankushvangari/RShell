@@ -1,4 +1,4 @@
-# Assignment 2: RShell
+# RShell
 
 **This project is a simple implementation of a bash developed from scratch.**
 
