@@ -1,6 +1,6 @@
 # RShell
 
-**This project is a simple implementation of a bash developed from scratch.**
+**This project is a comprehensive implementation of a bash developed from scratch.**
 
 ## Usage
 Commands will have the following format:
